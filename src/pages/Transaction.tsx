@@ -9,14 +9,7 @@ import UserCard from "@/components/user-card"
 import api from "@/lib/api"
 import { useAuthStore } from "@/store/authStore"
 import { useEffect, useState } from "react"
-
-type TransactionRecord = {
-  invoice_number: string
-  transaction_type: string
-  description: string
-  total_amount: number
-  created_on: string
-}
+import type { TransactionRecord } from "@/lib/types"
 
 export default function Transaction() {
   const token = useAuthStore((s) => s.token)

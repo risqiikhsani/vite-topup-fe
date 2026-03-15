@@ -14,8 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import AuthCard from "@/components/auth-card"
-
-const API_URL = import.meta.env.VITE_API_URL
+import api from "@/lib/api"
 
 async function registerFetcher(
   url: string,
@@ -30,14 +29,8 @@ async function registerFetcher(
     }
   }
 ) {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data?.message ?? "Registration failed")
-  return data
+  const res = await api.post(url, arg)
+  return res.data
 }
 
 export default function SignUp() {
@@ -49,7 +42,7 @@ export default function SignUp() {
   const [confirmPassword, setConfirmPassword] = useState("")
 
   const { trigger, isMutating, error } = useSWRMutation(
-    `${API_URL}/registration`,
+    "/registration",
     registerFetcher
   )
 

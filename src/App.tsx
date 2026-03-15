@@ -9,8 +9,7 @@ import Profile from "@/pages/Profile"
 import Home from "./pages/Home"
 import { useAuthStore } from "@/store/authStore"
 import Layout from "@/components/layout"
-
-const API_URL = import.meta.env.VITE_API_URL
+import api from "@/lib/api"
 
 export default function App() {
   const token = useAuthStore((s) => s.token)
@@ -19,12 +18,10 @@ export default function App() {
   useEffect(() => {
     if (!token) return
 
-    fetch(`${API_URL}/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        if (json?.data) setProfile(json.data)
+    api
+      .get("/profile")
+      .then((res) => {
+        if (res.data?.data) setProfile(res.data.data)
       })
       .catch(() => {})
   }, [token, setProfile])

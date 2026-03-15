@@ -8,21 +8,14 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useAuthStore } from "@/store/authStore"
 import AuthCard from "@/components/auth-card"
-
-const API_URL = import.meta.env.VITE_API_URL
+import api from "@/lib/api"
 
 async function loginFetcher(
   url: string,
   { arg }: { arg: { email: string; password: string } }
 ) {
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(arg),
-  })
-  const data = await res.json()
-  if (!res.ok) throw new Error(data?.message ?? "Login failed")
-  return data
+  const res = await api.post(url, arg)
+  return res.data
 }
 
 export default function SignIn() {
@@ -32,7 +25,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("")
 
   const { trigger, isMutating, error } = useSWRMutation(
-    `${API_URL}/login`,
+    "/login",
     loginFetcher
   )
 

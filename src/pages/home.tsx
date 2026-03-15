@@ -13,21 +13,9 @@ import { useAuthStore } from "@/store/authStore"
 import { useState } from "react"
 import { toast } from "sonner"
 import useSWR, { useSWRConfig } from "swr"
+import type { DataBanner, DataService } from "@/lib/types"
 
 const fetcher = (url: string) => api.get(url).then((res) => res.data.data)
-
-type DataService = {
-  service_code: string
-  service_name: string
-  service_icon: string
-  service_tariff: number
-}
-
-type DataBanner = {
-  description: string
-  banner_name: string
-  banner_image: string
-}
 
 export default function Home() {
   const { isLoggedIn } = useAuthStore()

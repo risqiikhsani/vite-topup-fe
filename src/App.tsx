@@ -1,21 +1,46 @@
-import { Button } from "@/components/ui/button"
+import { useEffect } from "react"
+import { Route, Routes } from "react-router-dom"
+import TopUp from "@/pages/TopUp"
+import Transaction from "@/pages/Transaction"
+import SignIn from "@/pages/SignIn"
+import SignUp from "@/pages/SignUp"
+import NotFound from "@/pages/NotFound"
+import Profile from "@/pages/Profile"
+import Home from "./pages/Home"
+import TopNavbar from "./components/topnavbar"
+import { useAuthStore } from "@/store/authStore"
 
-export function App() {
+const API_URL = import.meta.env.VITE_API_URL
+
+export default function App() {
+  const token = useAuthStore((s) => s.token)
+  const setProfile = useAuthStore((s) => s.setProfile)
+
+  useEffect(() => {
+    if (!token) return
+
+    fetch(`${API_URL}/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json?.data) setProfile(json.data)
+      })
+      .catch(() => {})
+  }, [token, setProfile])
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
-        </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
-      </div>
+    <div>
+      <TopNavbar />
+      <Routes>
+        <Route path="/" element={<Home/>} />
+        <Route path="/topup" element={<TopUp />} />
+        <Route path="/transaction" element={<Transaction />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </div>
   )
 }
-
-export default App

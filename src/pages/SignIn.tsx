@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { useAuthStore } from "@/store/authStore"
+import AuthCard from "@/components/auth-card"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -53,21 +54,24 @@ export default function SignIn() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-57px)] items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sign In</CardTitle>
-          <CardDescription>Enter your email and password to access your account.</CardDescription>
+    <AuthCard>
+      <Card className="border-none shadow-none">
+        <CardHeader className="items-center text-center">
+          <CardTitle className="text-3xl font-bold">Masuk atau buat akun untuk memulai</CardTitle>
+          <CardDescription>
+            Silakan masukkan email dan password Anda.
+          </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent className="flex flex-col gap-6">
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="email">Email</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder="masukkan email anda"
                 required
+                className="h-12"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -77,8 +81,9 @@ export default function SignIn() {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="masukkan password anda"
                 required
+                className="h-12"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -88,18 +93,17 @@ export default function SignIn() {
             )}
           </CardContent>
           <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full" disabled={isMutating}>
-              {isMutating ? "Signing in…" : "Sign In"}
+            <Button type="submit" className="h-12 w-full bg-[#f7311e] hover:bg-[#d12918]" disabled={isMutating}>
+              {isMutating ? "Signing in…" : "Masuk"}
             </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Don't have an account?{" "}
-              <Link to="/signup" className="underline underline-offset-4 hover:text-primary">
-                Sign up
+            <p className="text-center text-sm text-muted-foreground">
+              Belum punya akun?{" "}
+              <Link to="/signup" className="font-bold text-[#f7311e] hover:underline">
+                registrasi di sini
               </Link>
             </p>
           </CardFooter>
         </form>
       </Card>
-    </div>
-  )
+    </AuthCard>)
 }

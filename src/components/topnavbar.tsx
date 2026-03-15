@@ -1,5 +1,7 @@
 import { useAuthStore } from "@/store/authStore"
 import { Link, useNavigate } from "react-router-dom"
+import { Button } from "./ui/button"
+import Logo from "@/assets/images/Logo.png"
 
 export default function TopNavbar() {
   const { isLoggedIn, logout } = useAuthStore()
@@ -11,15 +13,15 @@ export default function TopNavbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b px-8 py-3">
-      <div className="flex gap-4">
-        <Link to="/" className="font-medium hover:underline">
-          Home
+    <nav className="flex items-center justify-between border-b px-8 py-4">
+      <div className="flex items-center gap-4">
+        <Link to="/" className="font-medium hover:underline flex items-center gap-2">
+          <img src={Logo} alt="Logo" className="h-8" /> <span className="font-bold">SIMS PPOB-RISQI</span>
         </Link>
       </div>
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         {isLoggedIn ? (
-          <div className="flex gap-4">
+          <div className="flex items-center gap-6">
             <Link to="/topup" className="font-medium hover:underline">
               TopUp
             </Link>
@@ -27,17 +29,12 @@ export default function TopNavbar() {
               Transaction
             </Link>
             <Link to="/profile" className="font-medium hover:underline">
-              Profile
+              Akun
             </Link>
-            <button
-              onClick={handleLogout}
-              className="text-sm font-medium text-destructive hover:underline"
-            >
-              Sign Out
-            </button>
+            <Button onClick={handleLogout} className="bg-red-400">Sign Out</Button>
           </div>
         ) : (
-          <div className="flex gap-4">
+          <div className="flex items-center gap-4">
             <Link to="/signin" className="text-sm font-medium hover:underline">
               Sign In
             </Link>

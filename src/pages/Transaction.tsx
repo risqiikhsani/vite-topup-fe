@@ -1,7 +1,14 @@
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import UserCard from "@/components/user-card"
+import api from "@/lib/api"
 import { useAuthStore } from "@/store/authStore"
 import { useEffect, useState } from "react"
-import api from "@/lib/api"
 
 type TransactionRecord = {
   invoice_number: string
@@ -15,6 +22,8 @@ export default function Transaction() {
   const token = useAuthStore((s) => s.token)
   const [history, setHistory] = useState<TransactionRecord[]>([])
   const [offset, setOffset] = useState(0)
+  const [selectedInvoice, setSelectedInvoice] =
+    useState<TransactionRecord | null>(null)
   const limit = 5
 
   useEffect(() => {
@@ -53,7 +62,7 @@ export default function Transaction() {
   }
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-8">
+    <div className="flex flex-col gap-10">
       <UserCard />
       <div>
         <h2 className="mb-6 text-xl font-bold text-[#333]">Semua Transaksi</h2>
@@ -71,10 +80,21 @@ export default function Transaction() {
                 >
                   {record.transaction_type === "TOPUP" ? "+" : "-"} {formatCurrency(record.total_amount)}
                 </span>
-                <span className="text-xs text-muted-foreground">{record.description}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 text-[10px] text-blue-600 hover:text-blue-800"
+                  onClick={() => setSelectedInvoice(record)}
+                >
+                  Show Invoice
+                </Button>
               </div>
               <div className="mt-1 flex items-center justify-between">
-                <span className="text-[10px] text-muted-foreground">{formatDate(record.created_on)} WIB</span>
+                <div className="flex flex-col items-end">
+                  <span className="text-[10px] text-muted-foreground">{formatDate(record.created_on)} WIB</span>
+                </div>
+                <p className="text-sm font-medium text-[#333]">{record.description}</p>
+                
               </div>
             </div>
           ))}
@@ -91,6 +111,70 @@ export default function Transaction() {
           <p className="py-10 text-center text-muted-foreground">Belum ada history transaksi</p>
         )}
       </div>
+
+      <Dialog
+        open={!!selectedInvoice}
+        onOpenChange={(open) => !open && setSelectedInvoice(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center font-bold">
+              Invoice Transaksi
+            </DialogTitle>
+          </DialogHeader>
+          {selectedInvoice && (
+            <div className="flex flex-col gap-6 py-4">
+              <div className="flex flex-col items-center gap-1">
+                <p className="text-sm text-muted-foreground">Total Transaksi</p>
+                <p
+                  className={`text-3xl font-bold ${
+                    selectedInvoice.transaction_type === "TOPUP"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {selectedInvoice.transaction_type === "TOPUP" ? "+" : "-"}{" "}
+                  {formatCurrency(selectedInvoice.total_amount)}
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-muted-foreground">Nomor Invoice</span>
+                  <span className="font-medium">
+                    {selectedInvoice.invoice_number}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-muted-foreground">Tipe Transaksi</span>
+                  <span className="font-medium">
+                    {selectedInvoice.transaction_type}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-muted-foreground">Deskripsi</span>
+                  <span className="font-medium text-right">
+                    {selectedInvoice.description}
+                  </span>
+                </div>
+                <div className="flex justify-between border-b pb-2">
+                  <span className="text-muted-foreground">Waktu Transaksi</span>
+                  <span className="font-medium">
+                    {formatDate(selectedInvoice.created_on)} WIB
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                className="mt-4 w-full bg-[#f7311e] hover:bg-[#d12918]"
+                onClick={() => setSelectedInvoice(null)}
+              >
+                Tutup
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

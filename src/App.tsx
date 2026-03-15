@@ -7,8 +7,8 @@ import SignUp from "@/pages/SignUp"
 import NotFound from "@/pages/NotFound"
 import Profile from "@/pages/Profile"
 import Home from "./pages/Home"
-import TopNavbar from "./components/topnavbar"
 import { useAuthStore } from "@/store/authStore"
+import Layout from "@/components/layout"
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -30,17 +30,16 @@ export default function App() {
   }, [token, setProfile])
 
   return (
-    <div>
-      <TopNavbar />
-      <Routes>
-        <Route path="/" element={<Home/>} />
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<Home />} />
         <Route path="/topup" element={<TopUp />} />
         <Route path="/transaction" element={<Transaction />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="/signup" element={<SignUp />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </div>
+      </Route>
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signup" element={<SignUp />} />
+    </Routes>
   )
 }

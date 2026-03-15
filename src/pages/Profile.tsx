@@ -5,6 +5,7 @@ import { useAuthStore } from "@/store/authStore"
 import { useEffect, useRef, useState } from "react"
 import { toast } from "sonner"
 import { Pencil } from "lucide-react"
+import defaultProfile from "@/assets/images/Profile Photo.png"
 
 export default function Profile() {
   const profile = useAuthStore((s) => s.profile)
@@ -60,7 +61,7 @@ export default function Profile() {
       if (selectedFile) {
         const imagePayload = new FormData()
         imagePayload.append("file", selectedFile)
-        
+
         await api.put("/profile/image", imagePayload, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -69,7 +70,7 @@ export default function Profile() {
       }
 
       toast.success("Profile updated successfully")
-      
+
       // Refetch profile data
       const getProfile = await api.get("/profile")
       if (getProfile.data.status === 0) {
@@ -88,26 +89,28 @@ export default function Profile() {
   }
 
   return (
-    <div className="p-8 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Profile</h1>
+    <div className="mx-auto max-w-lg">
+      <h1 className="mb-6 text-3xl font-bold text-center">Profile</h1>
 
-      {!profile && (
-        <p className="text-muted-foreground">Loading profile…</p>
-      )}
+      {!profile && <p className="text-muted-foreground text-center">Loading profile…</p>}
 
       {profile && (
         <div className="flex flex-col items-center gap-6">
-          <div className="relative group">
+          <div className="group relative">
             <img
-              src={previewImage || profile.profile_image}
+              src={
+                previewImage || (profile.profile_image && !profile.profile_image.includes("null")
+                  ? profile.profile_image
+                  : defaultProfile )
+              }
               alt={`${profile.first_name} ${profile.last_name}`}
-              className="h-24 w-24 rounded-full object-cover border-2 border-primary/20"
+              className="h-24 w-24 rounded-full border-2 border-primary/20 object-cover"
             />
             {isEditing && (
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="absolute bottom-0 right-0 p-1.5 bg-white border border-border rounded-full shadow-sm hover:bg-muted transition-colors"
+                className="absolute right-0 bottom-0 rounded-full border border-border bg-white p-1.5 shadow-sm transition-colors hover:bg-muted"
                 title="Ganti Foto"
               >
                 <Pencil className="h-4 w-4 text-muted-foreground" />
@@ -121,8 +124,8 @@ export default function Profile() {
               className="hidden"
             />
           </div>
-          
-          <div className="flex flex-col gap-4 w-full">
+
+          <div className="flex w-full flex-col gap-4">
             <div className="flex flex-col gap-1">
               <p>Email</p>
               <Input value={profile.email} disabled />

@@ -38,7 +38,7 @@ export default function TopUp() {
 
 
   return (
-    <div className="mx-auto flex flex-col gap-10 p-8">
+    <div className="flex flex-col gap-10">
       <div>
         <h1 className="text-3xl font-bold">TopUp</h1>
         <p className="mt-2 text-muted-foreground">Welcome to the TopUp page.</p>
